@@ -24,7 +24,7 @@ public interface MapLinkRepository extends JpaRepository<MapLink, Long> {
 	MapLink findByUrl(@Param("url") String url);
 
 	/**
-	 * get all data as pages using pageable
+	 * get all data as pages using Pageable paramters
 	 */
 	Page<MapLink> findAll(Pageable page);
 }

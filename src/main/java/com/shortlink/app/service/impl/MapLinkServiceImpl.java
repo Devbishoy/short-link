@@ -22,6 +22,7 @@ import com.shortlink.app.service.DecodeService;
 import com.shortlink.app.service.EncodeService;
 import com.shortlink.app.service.MapLinkService;
 import com.shortlink.app.service.dto.UrlDTO;
+import com.shortlink.app.service.util.Messages;
 import com.shortlink.app.service.util.URLUtil;
 
 @Service
@@ -30,24 +31,24 @@ public class MapLinkServiceImpl implements MapLinkService {
 
 	private final Logger log = LoggerFactory.getLogger(MapLinkServiceImpl.class);
 	private final MapLinkRepository mapLinkRepository;
-    
+
 	@Autowired
 	DecodeService decodeService;
-	
+
 	@Autowired
 	EncodeService encodeService;
-	
+
 	public MapLinkServiceImpl(MapLinkRepository mapLinkRepository) {
 		this.mapLinkRepository = mapLinkRepository;
 	}
 
 	@Override
-	public MapLink save(MapLink mapLink) {	
+	public MapLink save(MapLink mapLink) {
 		return mapLinkRepository.save(mapLink);
 	}
 
 	@Override
-	public MapLink findOne(Long id) {		
+	public MapLink findOne(Long id) {
 		return mapLinkRepository.findById(id).orElse(null);
 	}
 
@@ -56,6 +57,10 @@ public class MapLinkServiceImpl implements MapLinkService {
 		mapLinkRepository.deleteById(id);
 	}
 
+	/**
+	 * create short link and check if longurl or orignial url exist or not
+	 * before
+	 */
 	@Override
 	public String getShortLink(String url, String longUrl) {
 		log.info("Shortening {}", longUrl);
@@ -73,9 +78,12 @@ public class MapLinkServiceImpl implements MapLinkService {
 
 		String baseString = url;
 		String shortenedURL = baseString + "/" + mapLink.getKey();
-		return shortenedURL;		
+		return shortenedURL;
 	}
 
+	/**
+	 * get orignialk url back using unique String
+	 */
 	@Override
 	public String getLongURLFromID(String id) {
 		Long Key = decodeService.decodeToBase10(id);
@@ -84,16 +92,19 @@ public class MapLinkServiceImpl implements MapLinkService {
 		if (mapLink == null)
 			return null;
 		else {
-			log.info("Update Open Before for {}", mapLink.getUrl());
+			log.info(Messages.UPDATE_OPEN_BEFORE_FOR, mapLink.getUrl());
 			Long openBefore = mapLink.getOpened();
 			openBefore = openBefore + 1;
 			mapLink.setOpened(openBefore);
 			mapLinkRepository.save(mapLink);
 		}
-		log.info("Converting shortened URL back to {}", mapLink.getUrl());
+		log.info(Messages.CONVERTING_SHORTENED_URL_BACK_TO, mapLink.getUrl());
 		return mapLink.getUrl();
 	}
 
+	/**
+	 * vailadate and check nullable of url
+	 */
 	@Override
 	public boolean validateURL(String url) {
 		if (StringUtils.isEmpty(url))
@@ -102,34 +113,48 @@ public class MapLinkServiceImpl implements MapLinkService {
 		return URLUtil.INSTANCE.validateURL(longUrl);
 	}
 
+	/**
+	 * 
+	 * return ResponseEntity result
+	 */
 	@Override
 	public ResponseEntity<String> getShortLinkResponse(UrlDTO urlDTO, HttpServletRequest request) {
 		String localURL = request.getRequestURL().toString();
 		String longUrl = URLUtil.INSTANCE.trimString(urlDTO.getUrl());
 
-		String shortenedUrl = "";
+		String shortUrl = "";
 		try {
-			shortenedUrl = getShortLink(localURL, longUrl);
+			shortUrl = getShortLink(localURL, longUrl);
 		} catch (Exception ex) {
-			log.error("Erorr While get short Link for "+longUrl, ex.getMessage());
-			return new ResponseEntity<String>(shortenedUrl, HttpStatus.INTERNAL_SERVER_ERROR);
+			log.error(Messages.ERORR_WHILE_GET_SHORT_LINK_FOR + longUrl, ex.getMessage());
+			return new ResponseEntity<String>(shortUrl, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		log.info("Shortened url to: " + shortenedUrl);
-		return new ResponseEntity<String>(shortenedUrl, HttpStatus.OK);
+		log.info(Messages.SHORT_URL_CREATED + shortUrl);
+		return new ResponseEntity<String>(shortUrl, HttpStatus.OK);
 	}
 
+	/**
+	 * get RedirectView which will redirect to orgnial url
+	 */
 	@Override
 	public RedirectView getRedirectURL(String id) {
-		String redirectUrlString = Optional.ofNullable(getLongURLFromID(id)).orElse("");		
-		log.info("Original URL: " + redirectUrlString);
+		String redirectUrlString = Optional.ofNullable(getLongURLFromID(id)).orElse("");
+		log.info(Messages.ORIGINAL_URL + redirectUrlString);
 		RedirectView redirectView = new RedirectView();
+		redirectUrlString = appeandHttp(redirectUrlString);
 		redirectView.setUrl(redirectUrlString);
 		return redirectView;
 	}
 
+	private String appeandHttp(String redirectUrlString) {
+		if (!redirectUrlString.startsWith(Messages.HTTP) && !redirectUrlString.startsWith(Messages.HTTPS))
+			redirectUrlString = Messages.HTTP + redirectUrlString;
+		return redirectUrlString;
+	}
+
 	@Override
-	public Page<MapLink> findAllURLS(Pageable page) {	
-		Page<MapLink> pageList= mapLinkRepository.findAll(page);
+	public Page<MapLink> findAllURLS(Pageable page) {
+		Page<MapLink> pageList = mapLinkRepository.findAll(page);
 		return pageList;
 	}
 
