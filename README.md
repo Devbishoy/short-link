@@ -193,21 +193,21 @@ To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`)
     
 application will start at localhost:8081 
    
-     to create short Link POST request json data to http://localhost:8081/api/link 		
+     To create short Link POST request JSON data to URL  http://localhost:8081/api/link 		
      	
-     EX: 		{"url":"https://spring.io/blog/2019/10/16/spring-boot-2-2-0" } 
+     EX of JSON : 		{"url":"https://spring.io/blog/2019/10/16/spring-boot-2-2-0" } 
      	
-     resutl :  http://localhost:8081/api/link/vX
+     Result :  http://localhost:8081/api/link/vX
      	
-     to test redirect open Browser and past return value 
+     To test redirect open Browser and past return value 
      
      EX: http://localhost:8081/api/link/vX 
      	
-     to get some statistics from db and opened count  
+     To get some statistics from DB and opened count  
      
-     get request for http://localhost:8081/api/links  take's parameters page and size and url 
+     Get request for http://localhost:8081/api/links  take's parameters page and size and URL 
      	
-     Ex: http://localhost:8081/api/links?page=0&size=20
+     EX: http://localhost:8081/api/links?page=0&size=20 or http://localhost:8081/api/links 
      	 	
 
 [jhipster homepage and latest documentation]: https://www.jhipster.tech
