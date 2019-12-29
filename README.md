@@ -163,9 +163,13 @@ To stop it and remove the container, run:
     docker-compose -f src/main/docker/postgresql.yml down
 
 You can also fully dockerize your application and all the services that it depends on.
-To achieve this, first build a docker image of your app by running:
+To achieve this, first build a docker image of your app by running: 
 
-    ./mvnw -Pprod verify jib:dockerBuild
+    mvnw -Pprod  verify jib:dockerBuild
+    
+ To skip tests  
+    
+    mvnw -Pprod -Dmaven.test.skip=true verify jib:dockerBuild
 
 Then run:
 

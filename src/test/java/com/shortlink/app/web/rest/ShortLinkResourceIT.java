@@ -4,15 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +21,7 @@ import com.shortlink.app.service.MapLinkService;
 import com.shortlink.app.service.dto.UrlDTO;
 import com.shortlink.app.web.rest.errors.ExceptionTranslator;
 
-@RunWith(SpringRunner.class)
+
 @SpringBootTest(classes = ShortLinkApp.class)
 public class ShortLinkResourceIT {
 
@@ -44,7 +42,7 @@ public class ShortLinkResourceIT {
 	@Autowired
 	MapLinkService mapLinkService;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(new ShortLinkResource(mapLinkService))
