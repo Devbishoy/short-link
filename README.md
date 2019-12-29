@@ -181,6 +181,23 @@ For more information refer to [Using Docker and Docker-Compose][], this page als
 
 To configure CI for your project, run the ci-cd sub-generator (`jhipster ci-cd`), this will let you generate configuration files for a number of Continuous Integration systems. Consult the [Setting up Continuous Integration][] page for more information.
 
+
+## Fast StartUP 
+   1-mvnw -Pprod  verify jib:dockerBuild
+   2-docker-compose -f src/main/docker/app.yml up -d
+   3-: application will start at localhost:8081 
+   
+     	to create short Link POST request json data to http://localhost:8081/api/link 		
+     	EX: 		{"url":"https://spring.io/blog/2019/10/16/spring-boot-2-2-0" } 
+     	resutl :  http://localhost:8081/api/link/vX
+     	
+     	to test redirect open Browser and past return value EX: http://localhost:8081/api/link/vX 
+     	
+     	to get some statistics from db and opened count  
+     	get request for http://localhost:8081/api/links  take's parameters page and size and url 
+     	Ex: http://localhost:8081/api/links?page=0&size=20
+     	 	
+
 [jhipster homepage and latest documentation]: https://www.jhipster.tech
 [jhipster 6.6.0 archive]: https://www.jhipster.tech/documentation-archive/v6.6.0
 [using jhipster in development]: https://www.jhipster.tech/documentation-archive/v6.6.0/development/

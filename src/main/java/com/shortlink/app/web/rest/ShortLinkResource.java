@@ -89,8 +89,8 @@ public class ShortLinkResource {
 	 * 
 	 * @param pageable
 	 * @return data pagenation
-	 * @apiParam : take paramters page and size as url paramter ex:?page=1& in
-	 *           case of no paramter default value is size 20 and page 1
+	 * @apiParam : take paramters page and size as url paramter ex:?page=0& in
+	 *           case of no parameter default value is size 20 and page 0
 	 */
 	@GetMapping("/links")
 	@Timed
